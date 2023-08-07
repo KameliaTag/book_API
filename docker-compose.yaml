@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  server:
+    image: node:18.0.0-alpine
+    user: node
+    working_dir: /home/node
+    tty: true
+    stdin_open: true
+    ports:
+      - 9000:9000
+    volumes:
+      - ./server:/home/node
+
+  client:
+    image: node:18.0.0-alpine
+    user: node
+    working_dir: /home/node
+    tty: true
+    stdin_open: true
+    ports:
+      - 8000:8000
+    volumes:
+      - ./client:/home/node
+
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+      POSTGRES_USER: postgres
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+

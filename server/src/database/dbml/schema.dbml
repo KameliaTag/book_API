@@ -1,0 +1,94 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  email String [unique, not null]
+  firstName String [not null]
+  lastName String [not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  status Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  ownerOnMessages Message [not null]
+  receiverOnMessages Message [not null]
+  ownerOnRooms Room [not null]
+  memberOnRooms Room [not null]
+  RoomMessages RoomMessage [not null]
+  ownerOnRequest Request [not null]
+  receiverOnRequest Request [not null]
+}
+
+Table Room {
+  id Int [pk, increment]
+  owner User [not null]
+  ownerId Int [not null]
+  title String [not null]
+  capacity Int [not null]
+  open Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  members User [not null]
+  messages RoomMessage [not null]
+}
+
+Table RoomMessage {
+  id Int [pk, increment]
+  Room Room [not null]
+  RoomId Int [not null]
+  owner User [not null]
+  ownerId Int [not null]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table Message {
+  id Int [pk, increment]
+  owner User [not null]
+  ownerId Int [not null]
+  receiver User [not null]
+  receiverId Int [not null]
+  content String [not null]
+  read Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table Request {
+  id Int [pk, increment]
+  owner User [not null]
+  ownerId Int [not null]
+  receiver User [not null]
+  receiverId Int [not null]
+  status String [not null]
+  answer String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table RoomToUser {
+  memberonroomsId Int [ref: > Room.id]
+  membersId Int [ref: > User.id]
+}
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Ref: Room.ownerId > User.id [delete: Cascade]
+
+Ref: RoomMessage.RoomId > Room.id [delete: Cascade]
+
+Ref: RoomMessage.ownerId > User.id [delete: Cascade]
+
+Ref: Message.ownerId > User.id [delete: Cascade]
+
+Ref: Message.receiverId > User.id [delete: Cascade]
+
+Ref: Request.ownerId > User.id [delete: Cascade]
+
+Ref: Request.receiverId > User.id [delete: Cascade]
